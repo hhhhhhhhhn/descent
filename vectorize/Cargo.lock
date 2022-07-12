@@ -3,12 +3,5 @@
 version = 3
 
 [[package]]
-name = "descent"
-version = "0.1.0"
-dependencies = [
- "vectorize",
-]
-
-[[package]]
 name = "vectorize"
 version = "0.1.0"
