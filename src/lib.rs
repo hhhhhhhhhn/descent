@@ -1,4 +1,5 @@
 const EPSILON: f64 = 0.0000000000001;
+const GOOD_ENOUGH: f64 = 0.00001;
 
 pub fn gradient_descent<const N: usize>(f: fn([f64; N]) -> f64, rate: f64) -> [f64; N] {
     let mut guess: [f64; N] = [0.0; N];
@@ -10,6 +11,29 @@ pub fn gradient_descent<const N: usize>(f: fn([f64; N]) -> f64, rate: f64) -> [f
             .enumerate()
             .map(|(i, n)| {n - rate*calculate_gradient(f, guess, image, i)})
             .collect_array();
+    }
+    return guess;
+}
+
+pub fn gradient_descent_acc<const N: usize>(f: fn([f64; N]) -> f64, rate: f64, decay: f64) -> [f64; N] {
+    let mut guess: [f64; N] = [0.0; N];
+    let mut accelaration: [f64; N] = [0.0; N];
+
+    for _ in 0..1000 {
+        let image = f(guess);
+        accelaration = accelaration
+            .iter()
+            .enumerate()
+            .map(|(i, a)| {a*decay - rate*calculate_gradient(f, guess, image, i)})
+            .collect_array() ;
+        guess = guess
+            .iter()
+            .zip(accelaration.iter())
+            .map(|(n, a)| n + a)
+            .collect_array();
+        if accelaration.iter().map(|x| x.abs()).sum::<f64>() < GOOD_ENOUGH {
+            break
+        }
     }
     return guess;
 }
